@@ -1,0 +1,7 @@
+.terraform*
+*.tfvars
+.envrc
+*tfstate*
+*.log
+
+output

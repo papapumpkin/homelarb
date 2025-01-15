@@ -1,0 +1,18 @@
+server:
+  extraArgs:
+    - "--insecure"
+  ingress:
+    enabled: true
+    hosts:
+      - argocd.example.com
+    tls:
+      - secretName: argocd-tls
+        hosts:
+          - argocd.example.com
+resources:
+  limits:
+    memory: "1Gi"
+    cpu: "500m"
+  requests:
+    memory: "512Mi"
+    cpu: "250m"

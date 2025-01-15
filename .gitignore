@@ -5,3 +5,4 @@
 *.log
 charts
 output
+.DS_Store

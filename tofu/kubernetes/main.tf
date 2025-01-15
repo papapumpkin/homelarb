@@ -30,7 +30,7 @@ module "talos" {
       mac_address   = "ac:e2:d3:0b:da:0b"
       vm_id         = 800
       cpu           = 4
-      ram_dedicated = 4096
+      ram_dedicated = 16384
     }
     "cp-02" = {
       host_node     = "pve2"
@@ -39,7 +39,7 @@ module "talos" {
       mac_address   = "10:e7:c6:00:6d:32"
       vm_id         = 801
       cpu           = 4
-      ram_dedicated = 4096
+      ram_dedicated = 16384
 
     }
     "cp-03" = {
@@ -49,7 +49,7 @@ module "talos" {
       mac_address   = "10:62:e5:00:2e:3b"
       vm_id         = 802
       cpu           = 4
-      ram_dedicated = 4096
+      ram_dedicated = 16384
 
     }
     "worker-01" = {
@@ -59,7 +59,7 @@ module "talos" {
       mac_address   = "ac:e2:d3:0b:da:0b"
       vm_id         = 820
       cpu           = 4
-      ram_dedicated = 4096
+      ram_dedicated = 8192
     }
     "worker-02" = {
       host_node     = "pve2"
@@ -68,7 +68,7 @@ module "talos" {
       mac_address   = "ac:e2:d3:0b:da:0b"
       vm_id         = 821
       cpu           = 4
-      ram_dedicated = 4096
+      ram_dedicated = 8192
     }
     "worker-03" = {
       host_node     = "pve3"
@@ -77,7 +77,18 @@ module "talos" {
       mac_address   = "ac:e2:d3:0b:da:0b"
       vm_id         = 822
       cpu           = 4
-      ram_dedicated = 4096
+      ram_dedicated = 8192
     }
+  }
+}
+
+module "sealed_secrets" {
+  depends_on = [module.talos]
+  source     = "./bootstrap/sealed_secrets"
+
+  providers = {
+    kubernetes = kubernetes
+    doppler    = doppler
+    tls        = tls
   }
 }

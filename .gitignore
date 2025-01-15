@@ -3,5 +3,5 @@
 .envrc
 *tfstate*
 *.log
-
+charts
 output

@@ -8,12 +8,20 @@ module "doppler_secrets" {
     "PROXMOX_API_TOKEN_SECRET",
     "PROXMOX_ROOT_PASSWORD",
   ]
+  providers = {
+    doppler = doppler
+  }
 }
 
 module "kubernetes" {
   source = "./kubernetes"
 
   talos_version = "v1.8.3"
+
+  providers = {
+    doppler = doppler
+    tls     = tls
+  }
 
   proxmox = {
     name         = "homelarb"

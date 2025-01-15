@@ -81,3 +81,14 @@ module "talos" {
     }
   }
 }
+
+module "sealed_secrets" {
+  depends_on = [module.talos]
+  source     = "./bootstrap/sealed_secrets"
+
+  providers = {
+    kubernetes = kubernetes
+    doppler    = doppler
+    tls        = tls
+  }
+}

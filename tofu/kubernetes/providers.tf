@@ -13,11 +13,11 @@ terraform {
     }
     talos = {
       source  = "siderolabs/talos"
-      version = "0.7.0-alpha.0"
+      version = "0.7.0"
     }
     kubernetes = {
       source  = "hashicorp/kubernetes"
-      version = "2.31.0"
+      version = "2.35.1"
     }
   }
 }
@@ -34,7 +34,8 @@ provider "proxmox" {
   }
 }
 
-// provider "talos" {}
+# provider "talos" {
+# }
 
 provider "kubernetes" {
   host                   = module.talos.kube_config.kubernetes_client_configuration.host

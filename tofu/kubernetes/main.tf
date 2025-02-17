@@ -22,64 +22,7 @@ module "talos" {
     talos_version   = var.talos_version
   }
 
-  proxmox_nodes = {
-    "cp-01" = {
-      host_node     = "pve1"
-      machine_type  = "controlplane"
-      ip            = "10.27.27.50"
-      mac_address   = "ac:e2:d3:0b:da:0b"
-      vm_id         = 800
-      cpu           = 4
-      ram_dedicated = 16384
-    }
-    "cp-02" = {
-      host_node     = "pve2"
-      machine_type  = "controlplane"
-      ip            = "10.27.27.51"
-      mac_address   = "10:e7:c6:00:6d:32"
-      vm_id         = 801
-      cpu           = 4
-      ram_dedicated = 16384
-
-    }
-    "cp-03" = {
-      host_node     = "pve3"
-      machine_type  = "controlplane"
-      ip            = "10.27.27.52"
-      mac_address   = "10:62:e5:00:2e:3b"
-      vm_id         = 802
-      cpu           = 4
-      ram_dedicated = 16384
-
-    }
-    "worker-01" = {
-      host_node     = "pve1"
-      machine_type  = "worker"
-      ip            = "10.27.27.60"
-      mac_address   = "ac:e2:d3:0b:da:0b"
-      vm_id         = 820
-      cpu           = 4
-      ram_dedicated = 8192
-    }
-    "worker-02" = {
-      host_node     = "pve2"
-      machine_type  = "worker"
-      ip            = "10.27.27.61"
-      mac_address   = "ac:e2:d3:0b:da:0b"
-      vm_id         = 821
-      cpu           = 4
-      ram_dedicated = 8192
-    }
-    "worker-03" = {
-      host_node     = "pve3"
-      machine_type  = "worker"
-      ip            = "10.27.27.62"
-      mac_address   = "ac:e2:d3:0b:da:0b"
-      vm_id         = 822
-      cpu           = 4
-      ram_dedicated = 8192
-    }
-  }
+  proxmox_nodes = var.nodes
 }
 
 module "sealed_secrets" {
@@ -91,4 +34,16 @@ module "sealed_secrets" {
     doppler    = doppler
     tls        = tls
   }
+}
+
+module "proxmox_csi_plugin" {
+  depends_on = [module.talos]
+  source     = "./bootstrap/proxmox_csi_plugin"
+
+  providers = {
+    proxmox    = proxmox
+    kubernetes = kubernetes
+  }
+
+  proxmox = var.proxmox
 }

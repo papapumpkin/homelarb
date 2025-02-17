@@ -15,6 +15,8 @@ resource "proxmox_virtual_environment_vm" "this" {
 
   agent {
     enabled = true
+    trim    = true
+    type    = "virtio"
   }
 
   cpu {
@@ -46,7 +48,7 @@ resource "proxmox_virtual_environment_vm" "this" {
   boot_order = ["scsi0"]
 
   operating_system {
-    type = "l26" # Linux Kernel 2.6 - 6.X.
+    type = "l26"
   }
 
   initialization {

@@ -1,0 +1,32 @@
+persistence:
+  defaultClass: true
+  defaultFsType: ext4
+
+ingress:
+  enabled: true
+  ingressClassName: cilium
+  host: longhorn.beans.lan
+  tls: true
+  annotations:
+    cert-manager.io/cluster-issuer: internal-ca
+
+service:
+  ui:
+    type: ClusterIP
+
+defaultSettings:
+  defaultReplicaCount: 3
+  createDefaultDiskLabeledNodes: true
+  # Adjusted CPU resources for better performance with LVM
+  guaranteedEngineManagerCPU: 0.25
+  guaranteedReplicaManagerCPU: 0.25
+  storageMinimalAvailablePercentage: 10
+  # LVM-specific settings
+  storageOverProvisioningPercentage: 200 # Can be more aggressive with LVM
+  disableSchedulingOnCordonedNode: true
+  replicaZoneSoftAntiAffinity: true
+  # Added LVM-specific settings
+  storageReservedPercentageForDefaultDisk: 10
+  autoCleanupSystemGeneratedSnapshot: true
+  concurrentAutomaticEngineUpgradePerNodeLimit: 3
+  defaultDataLocality: "best-effort" # Good for LVM setups

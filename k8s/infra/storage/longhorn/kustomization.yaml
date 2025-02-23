@@ -3,8 +3,14 @@ kind: Kustomization
 
 namespace: longhorn-system
 
+configMapGenerator:
+  - name: node-list
+    literals:
+      - NODES=cp-01,cp-02,cp-03,worker-01,worker-02,worker-03
+
 resources:
   - namespace.yaml
+  - prep-nodes.yaml
 
 helmCharts:
   - name: longhorn

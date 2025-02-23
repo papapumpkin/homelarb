@@ -3,7 +3,7 @@ persistence:
   defaultFsType: ext4
 
 ingress:
-  enabled: true
+  enabled: false
   ingressClassName: cilium
   host: longhorn.beans.lan
   tls: true
@@ -22,11 +22,37 @@ defaultSettings:
   guaranteedReplicaManagerCPU: 0.25
   storageMinimalAvailablePercentage: 10
   # LVM-specific settings
-  storageOverProvisioningPercentage: 200 # Can be more aggressive with LVM
+  storageOverProvisioningPercentage: 200
   disableSchedulingOnCordonedNode: true
   replicaZoneSoftAntiAffinity: true
   # Added LVM-specific settings
   storageReservedPercentageForDefaultDisk: 10
   autoCleanupSystemGeneratedSnapshot: true
   concurrentAutomaticEngineUpgradePerNodeLimit: 3
-  defaultDataLocality: "best-effort" # Good for LVM setups
+  defaultDataLocality: "best-effort"
+
+  # nodes:
+  #   - name: cp-01
+  #     disks:
+  #       - path: /var/lib/longhorn
+  #         allowScheduling: true
+  #   - name: cp-02
+  #     disks:
+  #       - path: /var/lib/longhorn
+  #         allowScheduling: true
+  #   - name: cp-03
+  #     disks:
+  #       - path: /var/lib/longhorn
+  #         allowScheduling: true
+  #   - name: worker-01
+  #     disks:
+  #       - path: /var/lib/longhorn
+  #         allowScheduling: true
+  #   - name: worker-02
+  #     disks:
+  #       - path: /var/lib/longhorn
+  #         allowScheduling: true
+  #   - name: worker-03
+  #     disks:
+  #       - path: /var/lib/longhorn
+  #         allowScheduling: true

@@ -1,0 +1,21 @@
+authentik:
+  secret_key: ${AUTHENTIK_SECRET_KEY}
+  postgresql:
+    password: ${AUTHENTIK_POSTGRES_PASSWORD}
+
+persistence:
+  enabled: true
+  existingClaim: authentik-data
+
+service:
+  type: ClusterIP
+
+ingress:
+  enabled: false
+
+postgresql:
+  enabled: true
+  postgresqlPassword: ${AUTHENTIK_POSTGRES_PASSWORD}
+
+redis:
+  enabled: true

@@ -8,7 +8,7 @@ spec:
   infrastructure:
     annotations:
       io.cilium/lb-ipam-ips: 10.27.27.220
-      io.cilium/lb-mode: dsr
+      # io.cilium/lb-mode: dsr
   listeners:
     - protocol: HTTPS
       port: 443

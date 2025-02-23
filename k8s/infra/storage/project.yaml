@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
-  name: auth
+  name: storage
   namespace: argocd
 spec:
   sourceRepos:

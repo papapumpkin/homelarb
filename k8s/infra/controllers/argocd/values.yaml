@@ -35,8 +35,8 @@ configs:
     server.insecure: true
   rbac:
     policy.csv: |
-      g, ArgoCD Admins, role:admin
-      g, ArgoCD Viewers, role:readonly
+      g, argocd admins, role:admin
+      p, role:admin, *, *, */*, allow
   crds:
     install: true
     # -- Keep CRDs on chart uninstall
@@ -83,6 +83,8 @@ configs:
         configMap:
           name: argocd-cmp-cm
       - name: cmp-tmp
+        emptyDir: {}
+      - name: plugins # Added this volume
         emptyDir: {}
     resources:
       requests:

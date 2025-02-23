@@ -5,6 +5,7 @@ resources:
   - namespace.yaml
   - http-route.yaml
   - oidc.yaml
+  - cmp-plugin.yaml
 
 helmCharts:
   - name: argo-cd

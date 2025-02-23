@@ -1,0 +1,27 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: longhorn-node-labeler
+  namespace: longhorn-system
+  annotations:
+    kustomize.toolkit.fluxcd.io/dependsOn: >
+      [{"name": "longhorn", "namespace": "longhorn-system"}]
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: kubectl
+          image: bitnami/kubectl
+          envFrom:
+            - configMapRef:
+                name: node-list
+          command:
+            - /bin/sh
+            - -c
+            - |
+              IFS=',' read -ra NODE_ARRAY <<< "$NODES"
+              for node in "${NODE_ARRAY[@]}"; do
+                kubectl label nodes $node node.longhorn.io/create-default-disk=true
+                kubectl annotate nodes $node longhorn.io/default-disks-config='[{"path": "/var/lib/longhorn", "allowScheduling": true}]'
+              done

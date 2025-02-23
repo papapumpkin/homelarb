@@ -2,10 +2,9 @@ cluster:
   name: homelarb
   id: 1
 
-kubeProxyReplacement:
-  true
+kubeProxyReplacement: true
 
-  # Talos specific
+# Talos specific
 k8sServiceHost: localhost
 k8sServicePort: 7445
 securityContext:
@@ -55,9 +54,6 @@ resources:
     cpu: 200m
     memory: 512Mi
 
-#debug:
-#  enabled: true
-
 # Increase rate limit when doing L2 announcements
 k8sClientRateLimit:
   qps: 20
@@ -77,8 +73,7 @@ loadBalancer:
 
 gatewayAPI:
   enabled: true
-  hostNetwork:
-    enabled: true
+
 envoy:
   securityContext:
     capabilities:
@@ -95,7 +90,7 @@ hubble:
     rollOutPods: true
 
 ingressController:
-  enabled: true
+  enabled: false
   default: true
   loadbalancerMode: shared
   service:

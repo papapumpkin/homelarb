@@ -1,18 +1,132 @@
-server:
-  extraArgs:
-    - "--insecure"
-  ingress:
+configs:
+  secret:
+    extra:
+      dex.authentik.clientSecret: FUZp0LXMaN3c8G5Zw22YrQ4XMLfihTCctTaswoWiJF5kbHDZ8OdhV3mmIk9Nm5AOPioi5c1DdVSpIj5iSxcnGUcpFiW9dDq9QoDx4p85xVrKTIRgFpQqxtYFdKsUYrmx
+  cm:
+    create: true
+    application.resourceTrackingMethod: annotation+label
+    admin.enabled: false
+    url: https://argocd.beans.lan
+    dex.config: |
+      connectors:
+      - config:
+          issuer: https://authentik.beans.lan/application/o/argocd/
+          clientID: Pab7eEQ2ZxhYnlcLSyCd7ABQQJX4gmVxaix5zoYu
+          clientSecret: $dex.authentik.clientSecret
+          redirectURI: https://argocd.beans.lan/api/dex/callback
+          insecureEnableGroups: true
+          insecureSkipVerify: true 
+          scopes:
+            - openid
+            - profile
+            - email
+        name: authentik
+        type: oidc
+        id: authentik
+  cmp:
+    create: true
+    plugins:
+      kustomize-build-with-helm:
+        generate:
+          command: [sh, -c]
+          args: [kustomize build --enable-helm]
+  params:
+    controller.diff.server.side: true
+    server.insecure: true
+  rbac:
+    policy.csv: |
+      g, ArgoCD Admins, role:admin
+      g, ArgoCD Viewers, role:readonly
+  crds:
+    install: true
+    # -- Keep CRDs on chart uninstall
+    keep: false
+
+  controller:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 700Mi
+      limits:
+        memory: 4Gi
+
+  dex:
     enabled: true
-    hosts:
-      - argocd.example.com
-    tls:
-      - secretName: argocd-tls
-        hosts:
-          - argocd.example.com
-resources:
-  limits:
-    memory: "1Gi"
-    cpu: "500m"
-  requests:
-    memory: "512Mi"
-    cpu: "250m"
+    resources:
+      requests:
+        cpu: 10m
+        memory: 32Mi
+      limits:
+        memory: 128Mi
+
+  redis:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 64Mi
+      limits:
+        memory: 1Gi
+
+  server:
+    resources:
+      requests:
+        cpu: 50m
+        memory: 64Mi
+      limits:
+        memory: 1Gi
+
+  repoServer:
+    containerSecurityContext:
+      readOnlyRootFilesystem: true
+    volumes:
+      - name: cmp-kustomize-build-with-helm
+        configMap:
+          name: argocd-cmp-cm
+      - name: cmp-tmp
+        emptyDir: {}
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        memory: 2Gi
+    extraContainers:
+      - name: kustomize-build-with-helm
+        command:
+          - argocd-cmp-server
+        image: '{{ default .Values.global.image.repository .Values.repoServer.image.repository }}:{{ default (include "argo-cd.defaultTag" .) .Values.repoServer.image.tag }}'
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 999
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          seccompProfile:
+            type: RuntimeDefault
+          capabilities:
+            drop: [ALL]
+        volumeMounts:
+          - name: plugins
+            mountPath: /home/argocd/cmp-server/plugins
+          - name: cmp-kustomize-build-with-helm
+            mountPath: /home/argocd/cmp-server/config/plugin.yaml
+            subPath: kustomize-build-with-helm.yaml
+          - mountPath: /tmp
+            name: cmp-tmp
+
+  applicationSet:
+    resources:
+      requests:
+        cpu: 50m
+        memory: 64Mi
+      limits:
+        memory: 1Gi
+
+  notifications:
+    enabled: false
+    resources:
+      requests:
+        cpu: 100m
+        memory: 64Mi
+      limits:
+        cpu: 1000m
+        memory: 128Mi

@@ -1,0 +1,21 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: longhorn-system
+
+configMapGenerator:
+  - name: node-list
+    literals:
+      - NODES=cp-01,cp-02,cp-03,worker-01,worker-02,worker-03
+
+resources:
+  - namespace.yaml
+  - prep-nodes.yaml
+
+helmCharts:
+  - name: longhorn
+    repo: https://charts.longhorn.io
+    version: 1.8.0
+    releaseName: longhorn
+    namespace: longhorn-system
+    valuesFile: values.yaml
